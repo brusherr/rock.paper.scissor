@@ -1,51 +1,113 @@
 let pcScore = 0;
 let pScore = 0;
+let tie = 0;
+let moves = 5;
+let btnRock = document.querySelector('.rock');
+let btnPaper = document.querySelector('.paper');
+let btnScissor = document.querySelector('.scissor');
+let outComeDiv = document.querySelector('.outcome');
+let pScoreDiv = document.querySelector('.pscore');
+let pcScoreDiv = document.querySelector('.pcscore');
+let winnerDiv = document.querySelector('.winner');
+let movesDiv = document.querySelector('.moves');
+let ctn = document.querySelector('.containerbtn')
+let tieDiv = document.querySelector('.tie')
 
 function getComputerChoice() {
-    const pcChoice = ["rock", "paper", "scissor"];
+    const pcChoice = ["🗿", "📜", "✂️"];
     let arr = pcChoice[Math.floor(Math.random() * pcChoice.length)];
     return arr;
 }
 
 
 function playRound(playerSelection, computerSelection) {
-    if((playerSelection === "paper" && computerSelection === "scissor") ||
-    (playerSelection === "scissor" && computerSelection === "rock") ||
-    (playerSelection === "rock" && computerSelection === "paper")){
+    if((playerSelection === "📜" && computerSelection === "✂️") ||
+    (playerSelection === "✂️" && computerSelection === "🗿") ||
+    (playerSelection === "🗿" && computerSelection === "📜")){
         pcScore += 1;
-        return `Computer Win! Player: ${playerSelection}  beats Computer: ${computerSelection}`
+        moves -= 1;
+        outComeDiv.textContent = `Computer: ${computerSelection}  beats Player: ${playerSelection}`;
 
-    } else if((playerSelection === "scissor" && computerSelection === "paper") ||
-            (playerSelection === "rock" && computerSelection === "scissor") ||
-            (playerSelection === "paper" && computerSelection === "rock")
+    } else if((playerSelection === "✂️" && computerSelection === "📜") ||
+            (playerSelection === "🗿" && computerSelection === "✂️") ||
+            (playerSelection === "📜" && computerSelection === "🗿")
     ){
         pScore += 1;
-        return `Player Win! Player: ${playerSelection}  beats Computer: ${computerSelection}`
+        moves -= 1;
+        outComeDiv.textContent = `Player: ${playerSelection}  beats Computer: ${computerSelection}`;
     } else  {
-        return `Game is Tie! Player: ${playerSelection} Computer: ${computerSelection}`
+        moves -= 1;
+        tie += 1;
+        outComeDiv.textContent = `Player: ${playerSelection} Tie Computer: ${computerSelection}`;
     }
 }
 
+btnRock.addEventListener('click', () => {
+    const playerSelection = "🗿";
+    const computerSelection = getComputerChoice();
+    playRound(playerSelection, computerSelection);
+    pScoreDiv.textContent = `Player: ${pScore}`
+    pcScoreDiv.textContent = `Computer: ${pcScore}`
+    movesDiv.textContent = `Moves left: ${moves}`;
+    tieDiv.textContent  = `Tie: ${tie}`
+    winner();
+});
+btnPaper.addEventListener('click', () => {
+    const playerSelection = "📜";
+    const computerSelection = getComputerChoice();
+    playRound(playerSelection, computerSelection);
+    pScoreDiv.textContent = `Player: ${pScore}`
+    pcScoreDiv.textContent = `Computer: ${pcScore}`
+    movesDiv.textContent = `Moves left: ${moves}`;
+    winner();
+});
+btnScissor.addEventListener('click', () => {
+    const playerSelection = "✂️";
+    const computerSelection = getComputerChoice();
+    playRound(playerSelection, computerSelection);
+    pScoreDiv.textContent = `Player: ${pScore}`
+    pcScoreDiv.textContent = `Computer: ${pcScore}`
+    movesDiv.textContent = `Moves left: ${moves}`;
+    winner();
+});
 
-function game() {
-    playRound();
-    for (let i = 0; i < 5; i++) {
-        const playerSelection = prompt("Rock, Scissor, Paper").toLocaleLowerCase();
-        const computerSelection = getComputerChoice();
-        console.log(playRound(playerSelection, computerSelection))
-        console.log(pScore, pcScore)
-     }
-}
 
-game()
-
-function winner(pScore, pcScore) {
-    if(pScore > pcScore) {
-        return `Player win! ${pScore} vs ${pcScore}`
-    } else if(pcScore > pScore){
-        return `Computer win! ${pcScore} vs ${pScore}`
-    } else{
-        return `Draw! ${pcScore} vs ${pScore}`
+function winner() {
+    if ((pScore > pcScore) && (moves == 0)) {
+        winnerDiv.textContent = "Player Win!";
+        winnerDiv.style.color = "green";
+        rmvBtn()
+    } else if((pScore < pcScore) && (moves == 0)) {
+        winnerDiv.textContent = "Computer Win!"
+        winnerDiv.style.color = "red";
+        rmvBtn()
+    } else if ((pcScore == pScore) && (moves == 0)) {
+        winnerDiv.textContent = "Tie Game!"
+        winnerDiv.style.color = "gray";
+        rmvBtn()
     }
 }
-console.log(winner(pScore, pcScore))
+
+function reset() {
+    pScore = 0;
+    pcScore = 0;
+    moves = 5;
+    tie = 0;
+    winnerDiv.textContent = "";
+    pScoreDiv.textContent = `Player: 0`
+    pcScoreDiv.textContent = `Computer: 0`
+    movesDiv.textContent = `Moves left: 5`;
+    outComeDiv.textContent = "";
+    tieDiv.textContent = "Tie: 0";
+    ctn.appendChild(btnRock);
+    ctn.appendChild(btnPaper);
+    ctn.appendChild(btnScissor);
+}
+
+function rmvBtn() {
+    if(moves == 0) {
+        btnPaper.remove()
+        btnRock.remove()
+        btnScissor.remove()
+    }
+}
